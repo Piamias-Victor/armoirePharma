@@ -16,6 +16,7 @@ interface StatCardProps {
   className?: string
   onClick?: () => void
   animated?: boolean
+  style?: React.CSSProperties
 }
 
 export default function StatCard({

@@ -13,6 +13,7 @@ interface PriorityAlertProps {
   actionLabel?: string
   className?: string
   animated?: boolean
+  style?: React.CSSProperties
 }
 
 export default function PriorityAlert({
