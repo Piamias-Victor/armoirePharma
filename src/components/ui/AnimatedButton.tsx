@@ -1,8 +1,8 @@
 'use client'
 
-import { Button } from './button'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
+import Button from './button'
 
 interface AnimatedButtonProps {
   children: React.ReactNode

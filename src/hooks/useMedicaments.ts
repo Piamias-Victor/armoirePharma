@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Medicament, StatsArmoire } from '@/types/medicament'
-import { medicaments as initialData } from '@/data/medicaments'
-import { getExpiryStatus, getDaysUntilExpiry } from '@/lib/utils'
+import { getExpiryStatus } from '@/lib/utils'
 
 const STORAGE_KEY = 'armoire_medicaments'
 
@@ -11,38 +10,25 @@ export function useMedicaments() {
   const [medicaments, setMedicaments] = useState<Medicament[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  // Charger les données depuis localStorage ou utiliser les données de test
+  // Charger les données depuis localStorage ou commencer vide
   useEffect(() => {
     try {
-      // TEMPORAIRE : Forcer mise à jour des données
-      const currentVersion = '2.0'
-      const savedVersion = localStorage.getItem('armoire_version')
-      
-      if (savedVersion !== currentVersion) {
-        // Nouvelle version, utiliser les nouvelles données
-        setMedicaments(initialData)
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialData))
-        localStorage.setItem('armoire_version', currentVersion)
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        // Convertir les dates string en objets Date
+        const withDates = parsed.map((med: any) => ({
+          ...med,
+          datePeremption: new Date(med.datePeremption)
+        }))
+        setMedicaments(withDates)
       } else {
-        const saved = localStorage.getItem(STORAGE_KEY)
-        if (saved) {
-          const parsed = JSON.parse(saved)
-          // Convertir les dates string en objets Date
-          const withDates = parsed.map((med: any) => ({
-            ...med,
-            datePeremption: new Date(med.datePeremption)
-          }))
-          setMedicaments(withDates)
-        } else {
-          // Première utilisation : utiliser les données de test
-          setMedicaments(initialData)
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(initialData))
-          localStorage.setItem('armoire_version', currentVersion)
-        }
+        // Première utilisation : armoire vide
+        setMedicaments([])
       }
     } catch (error) {
       console.error('Erreur chargement médicaments:', error)
-      setMedicaments(initialData)
+      setMedicaments([])
     } finally {
       setIsLoading(false)
     }
@@ -57,6 +43,26 @@ export function useMedicaments() {
       console.error('Erreur sauvegarde médicaments:', error)
     }
   }, [])
+
+  // Ajouter un nouveau médicament
+  const addMedicament = useCallback((newMedicament: {
+    nom: string
+    categorie: string
+    datePeremption: string
+    quantite: number
+  }) => {
+    const medicament: Medicament = {
+      id: Date.now().toString(), // ID simple basé sur timestamp
+      nom: newMedicament.nom,
+      datePeremption: new Date(newMedicament.datePeremption),
+      categorie: newMedicament.categorie,
+      quantite: newMedicament.quantite,
+      statut: getExpiryStatus(new Date(newMedicament.datePeremption))
+    }
+
+    const updatedMedicaments = [...medicaments, medicament]
+    saveMedicaments(updatedMedicaments)
+  }, [medicaments, saveMedicaments])
 
   // Calculer les statistiques
   const getStats = useCallback((): StatsArmoire => {
@@ -110,6 +116,7 @@ export function useMedicaments() {
     isLoading,
     stats: getStats(),
     saveMedicaments,
+    addMedicament,
     getMedicamentsByStatus,
     getCategoriesVides
   }

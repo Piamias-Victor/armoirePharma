@@ -77,6 +77,19 @@ body {
   box-shadow: 0 8px 32px rgba(31, 41, 55, 0.15);
 }
 
+/* NAVIGATION SIMPLE ET EFFICACE */
+nav[class*="glass-intense"] {
+  margin: 0;
+  padding: 0;
+}
+
+/* Supprimer tout espace en bas du body */
+body {
+  margin: 0;
+  padding: 0;
+  padding-bottom: 0 !important;
+}
+
 /* Optimisations touch mobile */
 * {
   -webkit-tap-highlight-color: transparent;

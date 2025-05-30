@@ -6,8 +6,12 @@ import AccueilPage from './pages/AccueilPage'
 import ArmoirePage from './pages/ArmoirePage'
 import ScannerPage from './pages/ScannerPage'
 import LoadingSpinner from './ui/LoadingSpinner'
+import CameraPortal from './ui/CameraPortal'
+import ManualAddModal from './ui/ManualAddModal'
 import { useNavigation } from '@/hooks/useNavigation'
 import { useSwipe } from '@/hooks/useSwipe'
+import { useCamera } from '@/hooks/useCamera'
+import { useMedicaments } from '@/hooks/useMedicaments'
 
 interface AppLayoutProps {
   children?: React.ReactNode
@@ -15,13 +19,32 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const { activeTab, isTransitioning, changeTab, goToNext, goToPrevious } = useNavigation()
+  const { isOpen: cameraOpen, error, videoRef, stopCamera } = useCamera()
+  const { addMedicament } = useMedicaments()
   const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [showGlobalModal, setShowGlobalModal] = useState(false)
 
-  // Chargement initial simulé
+  // État global pour modal accessible partout
+  useEffect(() => {
+    // Écouter l'événement global pour ouvrir le modal
+    const handleOpenModal = () => setShowGlobalModal(true)
+    window.addEventListener('openManualAddModal', handleOpenModal)
+    return () => window.removeEventListener('openManualAddModal', handleOpenModal)
+  }, [])
+
+  const handleManualAdd = (medicament: any) => {
+    addMedicament(medicament)
+    setShowGlobalModal(false)
+    
+    // Feedback
+    alert(`${medicament.nom} ajouté à votre armoire !`)
+  }
+
+  // Chargement initial plus rapide
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsInitialLoading(false)
-    }, 1500)
+    }, 800) // Réduit de 1500ms à 800ms
     return () => clearTimeout(timer)
   }, [])
 
@@ -44,7 +67,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     }
   }
 
-  // Écran de chargement initial
+  // Écran de chargement initial - plus rapide
   if (isInitialLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 flex items-center justify-center">
@@ -60,7 +83,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
               Mon Armoire à Pharmacie
             </h1>
             <p className="text-gray-600">
-              Initialisation en cours...
+              Prêt à démarrer...
             </p>
           </div>
           
@@ -73,6 +96,22 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 relative animate-fade-in-up">
+      
+      {/* Portals globaux - accessibles depuis toutes les pages */}
+      {cameraOpen && (
+        <CameraPortal
+          videoRef={videoRef}
+          onClose={stopCamera}
+          error={error}
+        />
+      )}
+
+      <ManualAddModal
+        isOpen={showGlobalModal}
+        onClose={() => setShowGlobalModal(false)}
+        onAdd={handleManualAdd}
+      />
+
       {/* Contenu principal avec padding pour la navigation */}
       <main 
         className="pb-24 pt-4 px-4 min-h-screen"
@@ -88,7 +127,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
               
               {/* Indicateurs de page minimalistes */}
               <div className="flex justify-center gap-2">
-                {['accueil', 'armoire', 'scanner'].map((tab) => (
+                {['armoire', 'accueil', 'scanner'].map((tab) => (
                   <div
                     key={tab}
                     className={`h-1 rounded-full transition-all duration-300 ${

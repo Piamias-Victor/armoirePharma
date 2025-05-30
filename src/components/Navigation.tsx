@@ -3,23 +3,14 @@
 import { useState } from 'react'
 
 interface NavigationProps {
-  activeTab: 'accueil' | 'armoire' | 'scanner'
-  onTabChange: (tab: 'accueil' | 'armoire' | 'scanner') => void
+  activeTab: 'armoire' | 'accueil' | 'scanner'
+  onTabChange: (tab: 'armoire' | 'accueil' | 'scanner') => void
 }
 
 export default function Navigation({ activeTab, onTabChange }: NavigationProps) {
   const [pressedTab, setPressedTab] = useState<string | null>(null)
 
   const tabs = [
-    { 
-      id: 'accueil', 
-      icon: (active: boolean) => (
-        <svg className={`w-6 h-6 transition-all duration-200 ${active ? 'scale-110' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={active ? 2.5 : 2} d="m3 12 2-2m0 0 7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11 2 2m-2-2v10a1 1 0 0 1-1 1h-3m-6 0a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1m-6 0h6" />
-        </svg>
-      ), 
-      label: 'Accueil' 
-    },
     { 
       id: 'armoire', 
       icon: (active: boolean) => (
@@ -28,6 +19,15 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
         </svg>
       ), 
       label: 'Armoire' 
+    },
+    { 
+      id: 'accueil', 
+      icon: (active: boolean) => (
+        <svg className={`w-6 h-6 transition-all duration-200 ${active ? 'scale-110' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={active ? 2.5 : 2} d="m3 12 2-2m0 0 7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11 2 2m-2-2v10a1 1 0 0 1-1 1h-3m-6 0a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1m-6 0h6" />
+        </svg>
+      ), 
+      label: 'Accueil' 
     },
     { 
       id: 'scanner', 
@@ -41,15 +41,15 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
     },
   ] as const
 
-  const handleTabPress = (tabId: 'accueil' | 'armoire' | 'scanner') => {
+  const handleTabPress = (tabId: 'armoire' | 'accueil' | 'scanner') => {
     setPressedTab(tabId)
     setTimeout(() => setPressedTab(null), 150)
     onTabChange(tabId)
   }
 
   return (
-    <nav className="glass-intense fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl border-t-2 border-white/50 shadow-xl animate-fade-in-up">
-      <div className="flex justify-around py-4 px-2 max-w-md mx-auto">
+    <nav className="glass-intense border-t border-white/30 shadow-xl animate-fade-in-up">
+      <div className="flex justify-around py-2 px-2 max-w-md mx-auto">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id
           const isPressed = pressedTab === tab.id
@@ -59,7 +59,7 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
               key={tab.id}
               onClick={() => handleTabPress(tab.id)}
               className={`
-                flex flex-col items-center min-w-[60px] py-2 px-3 rounded-xl 
+                flex flex-col items-center min-w-[50px] py-1.5 px-2 rounded-lg 
                 transition-all duration-200 relative overflow-hidden
                 ${isActive 
                   ? 'bg-blue-500/20 text-blue-600 shadow-lg' 
@@ -70,17 +70,17 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
             >
               {/* Effet de ripple pour feedback tactile */}
               {isPressed && (
-                <div className="absolute inset-0 bg-blue-500/20 rounded-xl animate-ping" />
+                <div className="absolute inset-0 bg-blue-500/20 rounded-lg animate-ping" />
               )}
               
               {/* Indicateur de sélection */}
               {isActive && (
-                <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-blue-500 rounded-full animate-fade-in-up" />
+                <div className="absolute -top-0.5 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-blue-500 rounded-full animate-fade-in-up" />
               )}
               
               {/* Contenu du tab */}
               <div className="relative z-10 flex flex-col items-center">
-                <div className="mb-1">{tab.icon(isActive)}</div>
+                <div className="mb-0.5">{tab.icon(isActive)}</div>
                 <span className={`text-xs font-medium transition-all duration-200 ${
                   isActive ? 'font-semibold' : ''
                 }`}>
@@ -91,9 +91,6 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
           )
         })}
       </div>
-      
-      {/* Ligne de base décorative */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 rounded-full" />
     </nav>
   )
 }

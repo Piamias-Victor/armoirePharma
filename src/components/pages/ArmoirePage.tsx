@@ -1,9 +1,11 @@
 import { useState } from "react"
-import { Input } from "@/components/ui/input"
 import MedicamentCard from "@/components/ui/MedicamentCard"
 import LoadingSpinner from "@/components/ui/LoadingSpinner"
+import ActionButton from "@/components/ui/ActionButton"
 import { useMedicaments } from "@/hooks/useMedicaments"
 import { getExpiryStatus } from "@/lib/utils"
+import Input from "../ui/input"
+import Button from "../ui/button"
 
 export default function ArmoirePage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -49,11 +51,16 @@ export default function ArmoirePage() {
         onTouchEnd={(e) => e.stopPropagation()}
       >
         <Input 
-          className="border-0 bg-transparent text-gray-700 placeholder-gray-400 focus:ring-0 focus:outline-none" 
+          variant="search"
           placeholder="Rechercher..."
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          icon={
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          }
         />
       </div>
 
@@ -126,8 +133,29 @@ export default function ArmoirePage() {
         </div>
       )}
 
-      {/* Liste */}
-      {filteredMedicaments.length > 0 ? (
+      {/* Liste ou état vide */}
+      {medicaments.length === 0 ? (
+        /* État vide élégant pour armoire */
+        <div className="text-center py-16 animate-fade-in-up">
+          <div className="w-24 h-24 mx-auto mb-6 bg-blue-50 rounded-2xl flex items-center justify-center">
+            <svg className="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            Votre armoire est vide
+          </h3>
+          <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto">
+            Commencez par ajouter vos médicaments via l&apos;onglet Scanner ou saisie manuelle
+          </p>
+          
+          {/* BOUTONS UNIFIÉS */}
+          <div className="flex gap-3 justify-center">
+            <ActionButton action="scanner" />
+            <ActionButton action="manual" />
+          </div>
+        </div>
+      ) : filteredMedicaments.length > 0 ? (
         <div className="space-y-2">
           {filteredMedicaments.map((medicament) => (
             <MedicamentCard
@@ -138,7 +166,7 @@ export default function ArmoirePage() {
           ))}
         </div>
       ) : (
-        /* État vide */
+        /* État vide pour filtres */
         <div className="text-center py-16">
           <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
             <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,18 +177,19 @@ export default function ArmoirePage() {
             Aucun médicament trouvé
           </h3>
           <p className="text-gray-500 text-sm mb-6">
-            Essayez d'ajuster vos filtres
+            Essayez d&apos;ajuster vos filtres
           </p>
-          <button 
+          <Button 
             onClick={() => {
               setStatusFilter('all')
               setSelectedCategory(null)
               setSearchQuery('')
             }}
-            className="text-blue-600 hover:text-blue-800 font-medium"
+            variant="ghost"
+            size="sm"
           >
             Réinitialiser les filtres
-          </button>
+          </Button>
         </div>
       )}
     </div>

@@ -2,12 +2,12 @@
 
 import { useState, useCallback } from 'react'
 
-export type TabType = 'accueil' | 'armoire' | 'scanner'
+export type TabType = 'armoire' | 'accueil' | 'scanner'
 
-const tabs: TabType[] = ['accueil', 'armoire', 'scanner']
+const tabs: TabType[] = ['armoire', 'accueil', 'scanner']
 
 export function useNavigation() {
-  const [activeTab, setActiveTab] = useState<TabType>('accueil')
+  const [activeTab, setActiveTab] = useState<TabType>('accueil') // Accueil reste par défaut
   const [isTransitioning, setIsTransitioning] = useState(false)
 
   const changeTab = useCallback((newTab: TabType) => {
@@ -36,11 +36,27 @@ export function useNavigation() {
     changeTab(tabs[previousIndex])
   }, [activeTab, changeTab])
 
+  // Navigation programmatique vers onglets spécifiques
+  const goToScanner = useCallback(() => {
+    changeTab('scanner')
+  }, [changeTab])
+
+  const goToArmoire = useCallback(() => {
+    changeTab('armoire')
+  }, [changeTab])
+
+  const goToAccueil = useCallback(() => {
+    changeTab('accueil')
+  }, [changeTab])
+
   return {
     activeTab,
     isTransitioning,
     changeTab,
     goToNext,
-    goToPrevious
+    goToPrevious,
+    goToScanner,
+    goToArmoire,
+    goToAccueil
   }
 }

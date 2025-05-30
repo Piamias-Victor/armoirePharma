@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useEffect } from 'react'
 
 export function useCamera() {
   const [isOpen, setIsOpen] = useState(false)
@@ -8,6 +8,16 @@ export function useCamera() {
   const [error, setError] = useState<string | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
+
+  // Écouter l'événement global pour ouvrir la caméra
+  useEffect(() => {
+    const handleOpenCamera = () => {
+      startCamera()
+    }
+    
+    window.addEventListener('openCamera', handleOpenCamera)
+    return () => window.removeEventListener('openCamera', handleOpenCamera)
+  }, [])
 
   const startCamera = useCallback(async () => {
     try {
