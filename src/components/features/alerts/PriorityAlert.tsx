@@ -1,8 +1,7 @@
 'use client'
 
-import { Card, CardContent } from './card'
-import { Badge } from './badge'
-import { cn } from '@/lib/utils'
+import { Badge, Card, CardContent } from "@/components/ui"
+import { cn } from "@/lib"
 
 interface PriorityAlertProps {
   type: 'urgent' | 'attention' | 'info'

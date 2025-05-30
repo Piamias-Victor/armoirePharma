@@ -7,7 +7,7 @@ export type TabType = 'armoire' | 'accueil' | 'scanner'
 const tabs: TabType[] = ['armoire', 'accueil', 'scanner']
 
 export function useNavigation() {
-  const [activeTab, setActiveTab] = useState<TabType>('accueil') // Accueil reste par défaut
+  const [activeTab, setActiveTab] = useState<TabType>('accueil')
   const [isTransitioning, setIsTransitioning] = useState(false)
 
   const changeTab = useCallback((newTab: TabType) => {
@@ -49,6 +49,30 @@ export function useNavigation() {
     changeTab('accueil')
   }, [changeTab])
 
+  // Actions rapides combinées navigation + action
+  const scannerWithNavigation = useCallback(() => {
+    changeTab('scanner')
+    // Délai pour laisser la transition se faire
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('openCamera'))
+    }, 200)
+  }, [changeTab])
+
+  const addMedicamentWithNavigation = useCallback(() => {
+    // Rester sur la page actuelle mais ouvrir le modal
+    window.dispatchEvent(new CustomEvent('openManualAddModal'))
+  }, [])
+
+  const viewArmoireWithFilter = useCallback((filter?: 'expired' | 'warning') => {
+    changeTab('armoire')
+    // TODO: Envoyer l'événement de filtre
+    if (filter) {
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('setArmoireFilter', { detail: filter }))
+      }, 200)
+    }
+  }, [changeTab])
+
   return {
     activeTab,
     isTransitioning,
@@ -57,6 +81,10 @@ export function useNavigation() {
     goToPrevious,
     goToScanner,
     goToArmoire,
-    goToAccueil
+    goToAccueil,
+    // Actions enrichies
+    scannerWithNavigation,
+    addMedicamentWithNavigation,
+    viewArmoireWithFilter
   }
 }

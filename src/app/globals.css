@@ -4,15 +4,15 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Variables glassmorphism personnalisées - FOND PLUS SOMBRE */
+  /* Variables glassmorphism personnalisées */
   --glass-bg: rgba(255, 255, 255, 0.12);
   --glass-border: rgba(255, 255, 255, 0.18);
   --glass-shadow: rgba(15, 23, 42, 0.4);
   
   /* Variables shadcn/ui */
   --radius: 0.625rem;
-  --background: oklch(0.129 0.042 264.695); /* Fond sombre par défaut */
-  --foreground: oklch(0.984 0.003 247.858); /* Texte blanc */
+  --background: oklch(0.129 0.042 264.695);
+  --foreground: oklch(0.984 0.003 247.858);
   --card: oklch(0.208 0.042 265.755);
   --card-foreground: oklch(0.984 0.003 247.858);
   --popover: oklch(0.208 0.042 265.755);
@@ -58,6 +58,8 @@ body {
   position: relative;
   /* FOND CLAIR DÉGRADÉ pour pharmacie */
   background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+  margin: 0;
+  padding: 0;
 }
 
 /* Classes glassmorphism adaptées au fond clair */
@@ -75,19 +77,6 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.9);
   box-shadow: 0 8px 32px rgba(31, 41, 55, 0.15);
-}
-
-/* NAVIGATION SIMPLE ET EFFICACE */
-nav[class*="glass-intense"] {
-  margin: 0;
-  padding: 0;
-}
-
-/* Supprimer tout espace en bas du body */
-body {
-  margin: 0;
-  padding: 0;
-  padding-bottom: 0 !important;
 }
 
 /* Optimisations touch mobile */

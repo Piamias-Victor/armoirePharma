@@ -1,17 +1,14 @@
 'use client'
 
+import { useNavigation, useCamera, useMedicaments, useSwipe } from '@/hooks'
 import { useState, useEffect } from 'react'
+import { CameraPortal, ManualAddModal } from '../features'
+import AccueilPage from '../pages/AccueilPage'
+import ArmoirePage from '../pages/ArmoirePage'
+import ScannerPage from '../pages/ScannerPage'
+import { LoadingSpinner } from '../ui'
 import Navigation from './Navigation'
-import AccueilPage from './pages/AccueilPage'
-import ArmoirePage from './pages/ArmoirePage'
-import ScannerPage from './pages/ScannerPage'
-import LoadingSpinner from './ui/LoadingSpinner'
-import CameraPortal from './ui/CameraPortal'
-import ManualAddModal from './ui/ManualAddModal'
-import { useNavigation } from '@/hooks/useNavigation'
-import { useSwipe } from '@/hooks/useSwipe'
-import { useCamera } from '@/hooks/useCamera'
-import { useMedicaments } from '@/hooks/useMedicaments'
+
 
 interface AppLayoutProps {
   children?: React.ReactNode
@@ -44,14 +41,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsInitialLoading(false)
-    }, 800) // Réduit de 1500ms à 800ms
+    }, 800)
     return () => clearTimeout(timer)
   }, [])
 
   // Configuration des gestes swipe
   const swipeHandlers = useSwipe({
-    onSwipeLeft: goToNext,     // Swipe gauche = page suivante
-    onSwipeRight: goToPrevious  // Swipe droite = page précédente
+    onSwipeLeft: goToNext,
+    onSwipeRight: goToPrevious
   })
 
   const renderPage = () => {
@@ -67,17 +64,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
     }
   }
 
-  // Écran de chargement initial - plus rapide
+  // Écran de chargement initial
   if (isInitialLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center space-y-6">
-          {/* Logo animé */}
           <div className="w-24 h-24 mx-auto glass rounded-3xl flex items-center justify-center animate-float">
             <span className="text-4xl">💊</span>
           </div>
           
-          {/* Titre avec animation */}
           <div className="space-y-2 animate-fade-in-up">
             <h1 className="text-2xl font-bold text-gray-800">
               Mon Armoire à Pharmacie
@@ -87,7 +82,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </p>
           </div>
           
-          {/* Spinner */}
           <LoadingSpinner text="" />
         </div>
       </div>
@@ -95,9 +89,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 relative animate-fade-in-up">
-      
-      {/* Portals globaux - accessibles depuis toutes les pages */}
+    <>
+      {/* Portals globaux */}
       {cameraOpen && (
         <CameraPortal
           videoRef={videoRef}
@@ -112,46 +105,48 @@ export default function AppLayout({ children }: AppLayoutProps) {
         onAdd={handleManualAdd}
       />
 
-      {/* Contenu principal avec padding pour la navigation */}
-      <main 
-        className="pb-24 pt-4 px-4 min-h-screen"
-        {...swipeHandlers}
-      >
-        <div className="max-w-md mx-auto">
-          {/* Header sobre et moderne */}
-          <header className="mb-8 animate-fade-in-up">
-            <div className="text-center space-y-4">
-              <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
-                Armoire Pharmacie
-              </h1>
-              
-              {/* Indicateurs de page minimalistes */}
-              <div className="flex justify-center gap-2">
-                {['armoire', 'accueil', 'scanner'].map((tab) => (
-                  <div
-                    key={tab}
-                    className={`h-1 rounded-full transition-all duration-300 ${
-                      activeTab === tab 
-                        ? 'bg-blue-500 w-8' 
-                        : 'bg-gray-300 w-2'
-                    }`}
-                  />
-                ))}
+      {/* Contenu principal SANS navigation */}
+      <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 animate-fade-in-up">
+        <main 
+          className="pb-24 pt-4 px-4 min-h-screen"
+          {...swipeHandlers}
+        >
+          <div className="max-w-md mx-auto">
+            {/* Header sobre et moderne */}
+            <header className="mb-8 animate-fade-in-up">
+              <div className="text-center space-y-4">
+                <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
+                  Armoire Pharmacie
+                </h1>
+                
+                {/* Indicateurs de page minimalistes */}
+                <div className="flex justify-center gap-2">
+                  {['armoire', 'accueil', 'scanner'].map((tab) => (
+                    <div
+                      key={tab}
+                      className={`h-1 rounded-full transition-all duration-300 ${
+                        activeTab === tab 
+                          ? 'bg-blue-500 w-8' 
+                          : 'bg-gray-300 w-2'
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
+            </header>
+
+            {/* Contenu de la page avec transition */}
+            <div className={`space-y-4 transition-all duration-200 ${
+              isTransitioning ? 'opacity-60 scale-98 blur-sm' : 'opacity-100 scale-100 blur-0'
+            }`}>
+              {children || renderPage()}
             </div>
-          </header>
-
-          {/* Contenu de la page avec transition */}
-          <div className={`space-y-4 transition-all duration-200 ${
-            isTransitioning ? 'opacity-60 scale-98 blur-sm' : 'opacity-100 scale-100 blur-0'
-          }`}>
-            {children || renderPage()}
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
 
-      {/* Navigation fixe en bas */}
+      {/* Navigation SÉPARÉE au même niveau */}
       <Navigation activeTab={activeTab} onTabChange={changeTab} />
-    </div>
+    </>
   )
 }

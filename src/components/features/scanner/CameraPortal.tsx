@@ -1,7 +1,7 @@
 'use client'
 
-import { createPortal } from 'react-dom'
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 
 interface CameraPortalProps {
   videoRef: React.RefObject<HTMLVideoElement | null>

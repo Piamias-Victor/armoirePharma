@@ -1,9 +1,8 @@
 'use client'
 
-import { Card, CardContent } from './card'
-import { cn } from '@/lib/utils'
-import { Medicament } from '@/types/medicament'
-import { formatDate, getDaysUntilExpiry, getExpiryStatus } from '@/lib/utils'
+import { Card, CardContent } from "@/components/ui"
+import { getExpiryStatus, getDaysUntilExpiry, cn, formatDate } from "@/lib"
+import { Medicament } from "@/types"
 
 interface MedicamentCardProps {
   medicament: Medicament

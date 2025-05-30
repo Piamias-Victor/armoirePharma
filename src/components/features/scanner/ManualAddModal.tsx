@@ -1,10 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { createPortal } from 'react-dom'
-import Button from './button'
-import Input from './input'
-
+import { Input, Button } from "@/components/ui"
+import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 
 interface ManualAddModalProps {
   isOpen: boolean

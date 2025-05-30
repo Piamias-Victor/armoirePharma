@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import Button from './button'
+import Button from './base/button'
 
 interface AnimatedButtonProps {
   children: React.ReactNode
@@ -42,6 +42,13 @@ export default function AnimatedButton({
     lg: 'px-8 py-4 text-lg'
   }
 
+  // ✅ CORRIGÉ : Mapping des variants AnimatedButton vers Button
+  const variantMapping = {
+    default: 'primary' as const,
+    outline: 'secondary' as const,
+    ghost: 'ghost' as const
+  }
+
   return (
     <Button
       className={cn(
@@ -51,7 +58,7 @@ export default function AnimatedButton({
         loading && 'opacity-70 cursor-not-allowed',
         className
       )}
-      variant={variant}
+      variant={variantMapping[variant]} // ✅ Utilise le mapping
       onClick={handlePress}
       disabled={disabled || loading}
     >

@@ -10,6 +10,16 @@ export function useMedicaments() {
   const [medicaments, setMedicaments] = useState<Medicament[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  // ✅ CORRIGÉ : Fonction pour mapper les statuts anglais vers français
+  const mapStatusToFrench = (status: 'valid' | 'warning' | 'expired'): 'valide' | 'bientot_expire' | 'expire' => {
+    const mapping = {
+      'valid': 'valide' as const,
+      'warning': 'bientot_expire' as const,
+      'expired': 'expire' as const
+    }
+    return mapping[status]
+  }
+
   // Charger les données depuis localStorage ou commencer vide
   useEffect(() => {
     try {
@@ -51,13 +61,15 @@ export function useMedicaments() {
     datePeremption: string
     quantite: number
   }) => {
+    const expiryStatus = getExpiryStatus(new Date(newMedicament.datePeremption))
+    
     const medicament: Medicament = {
-      id: Date.now().toString(), // ID simple basé sur timestamp
+      id: Date.now().toString(),
       nom: newMedicament.nom,
       datePeremption: new Date(newMedicament.datePeremption),
       categorie: newMedicament.categorie,
       quantite: newMedicament.quantite,
-      statut: getExpiryStatus(new Date(newMedicament.datePeremption))
+      statut: mapStatusToFrench(expiryStatus) // ✅ CORRIGÉ : Mapping du statut
     }
 
     const updatedMedicaments = [...medicaments, medicament]

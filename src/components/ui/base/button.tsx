@@ -29,7 +29,7 @@ export default function Button({
   iconPosition = 'left',
   type = 'button',
   fullWidth = false
-}: ButtonProps) {
+}: ButtonProps) { // ✅ CORRIGÉ : Utilisation de l'interface au lieu de 'any'
   const [isPressed, setIsPressed] = useState(false)
 
   const handlePress = () => {
@@ -71,8 +71,8 @@ export default function Button({
       disabled={disabled || loading}
       className={cn(
         baseClasses,
-        variants[variant],
-        sizes[size],
+        variants[variant], // ✅ TypeScript sait maintenant que variant est typé
+        sizes[size],       // ✅ TypeScript sait maintenant que size est typé
         fullWidth && 'w-full',
         isPressed && 'scale-95',
         className

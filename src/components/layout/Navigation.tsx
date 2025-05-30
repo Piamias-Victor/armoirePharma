@@ -48,7 +48,7 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
   }
 
   return (
-    <nav className="glass-intense border-t border-white/30 shadow-xl animate-fade-in-up">
+    <nav className="fixed bottom-0 inset-x-0 z-[9999] glass-intense border-t border-white/30 shadow-xl">
       <div className="flex justify-around py-2 px-2 max-w-md mx-auto">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id
@@ -75,7 +75,7 @@ export default function Navigation({ activeTab, onTabChange }: NavigationProps) 
               
               {/* Indicateur de sélection */}
               {isActive && (
-                <div className="absolute -top-0.5 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-blue-500 rounded-full animate-fade-in-up" />
+                <div className="absolute -top-0.5 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-blue-500 rounded-full" />
               )}
               
               {/* Contenu du tab */}

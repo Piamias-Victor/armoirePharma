@@ -1,10 +1,8 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from './card'
-import { Badge } from './badge'
-import { cn } from '@/lib/utils'
-import { Medicament } from '@/types/medicament'
-import { formatDate, getDaysUntilExpiry } from '@/lib/utils'
+import { Card, CardHeader, CardTitle, CardContent, Badge } from "@/components/ui"
+import { cn, getDaysUntilExpiry, formatDate } from "@/lib"
+import { Medicament } from "@/types"
 
 interface AlertCardProps {
   medicaments: Medicament[]

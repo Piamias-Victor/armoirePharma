@@ -1,7 +1,7 @@
 'use client'
 
-import { Card, CardContent } from './card'
 import { cn } from '@/lib/utils'
+import { Card, CardContent } from './base/card'
 
 interface StatCardProps {
   title: string

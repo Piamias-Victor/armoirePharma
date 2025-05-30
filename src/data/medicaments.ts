@@ -105,34 +105,3 @@ export const medicaments: Medicament[] = [
     instructionsUsage: 'Émulsion pour brûlures légères'
   }
 ]
-
-export const pharmaciesProches = [
-  {
-    id: '1',
-    nom: 'Pharmacie du Centre',
-    adresse: '15 Rue de la République, 20000 Ajaccio',
-    distance: '850m',
-    tempsTrajet: '3 min à pied',
-    telephone: '04 95 51 12 34',
-    horaires: {
-      matin: '9h00 - 12h30',
-      apresmidi: '14h00 - 19h00'
-    },
-    ouvert: true,
-    coordonnees: { lat: 41.9188, lng: 8.7386 }
-  },
-  {
-    id: '2',
-    nom: 'Pharmacie de la Gare',
-    adresse: '3 Boulevard du Roi Jérôme, 20000 Ajaccio',
-    distance: '1.2km',
-    tempsTrajet: '5 min à pied',
-    telephone: '04 95 51 45 67',
-    horaires: {
-      matin: '8h30 - 12h00',
-      apresmidi: '14h30 - 19h30'
-    },
-    ouvert: false,
-    coordonnees: { lat: 41.9200, lng: 8.7345 }
-  }
-]

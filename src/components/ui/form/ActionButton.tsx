@@ -1,8 +1,8 @@
 'use client'
 
+import { useGlobalActions } from '@/hooks'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import { useGlobalActions } from '@/hooks/useGlobalActions'
 
 interface ActionButtonProps {
   action: 'scanner' | 'manual'

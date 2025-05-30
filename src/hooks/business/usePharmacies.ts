@@ -1,32 +1,30 @@
 'use client'
 
+import { Pharmacie } from '@/types'
 import { useState, useEffect } from 'react'
-import { pharmaciesProches } from '@/data/medicaments'
 
-interface Pharmacie {
-  id: string
-  nom: string
-  adresse: string
-  distance: string
-  tempsTrajet: string
-  telephone: string
-  horaires: {
-    matin: string
-    apresmidi: string
-  }
-  ouvert: boolean
-  coordonnees: { lat: number; lng: number }
-}
 
 export function usePharmacies() {
   const [pharmacies, setPharmacies] = useState<Pharmacie[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    // Import dynamique pour éviter les problèmes de circularité
+    const loadPharmacies = async () => {
+      try {
+        const { pharmaciesProches } = await import('@/data/pharmacies')
+        setPharmacies(pharmaciesProches)
+      } catch (error) {
+        console.error('Erreur chargement pharmacies:', error)
+        setPharmacies([])
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
     // Simuler un chargement des pharmacies proches
     const timer = setTimeout(() => {
-      setPharmacies(pharmaciesProches)
-      setIsLoading(false)
+      loadPharmacies()
     }, 800)
 
     return () => clearTimeout(timer)
